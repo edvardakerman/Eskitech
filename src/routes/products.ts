@@ -20,10 +20,14 @@ router.get('/products/:id', async (req: Request, res: Response) => {
 
     try {
         const product = await Product.findById(id).exec();
-        res.send(product);
+        if (!product) {
+            res.status(404).json({ message: 'Product not found' });
+        } else {
+            res.send(product);
+        }
     } catch (error) {
         console.error(error);
-        res.status(500).send(error);
+        res.status(500).json({ message: 'An error occurred while retrieving the product' });
     }
 });
 
@@ -31,13 +35,19 @@ router.get('/products/:id', async (req: Request, res: Response) => {
 router.post('/products', async (req: Request, res: Response) => {
     const { name, description, price, quantity } = req.body;
 
-    try {
-      const product = new Product({ name, description, price, quantity });
-      await product.save();
-      res.send(product);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send(error);
+    if (!name || !description || price == null || quantity == null) {
+        res.status(400).json({
+            message: 'All fields (name, description, price, and quantity) are required'
+        });
+    } else {
+        try {
+            const product = new Product({ name, description, price, quantity });
+            await product.save();
+            res.send(product);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'An error occurred while creating the product' });
+        }
     }
 });
 
@@ -46,13 +56,17 @@ router.post('/products', async (req: Request, res: Response) => {
 router.put('/products/:id', async (req: Request, res: Response) => {
     const id = req.params.id;
     const { name, description, price, quantity } = req.body;
-  
+
     try {
-      const product = await Product.findByIdAndUpdate(id, { name, description, price, quantity }, { new: true });
-      res.send(product);
+        const product = await Product.findByIdAndUpdate(id, { name, description, price, quantity }, { new: true });
+        if (!product) {
+            res.status(404).json({ message: 'Product not found' });
+        } else {
+            res.send(product);
+        }
     } catch (error) {
-      console.error(error);
-      res.status(500).send(error);
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while trying to update the product' });
     }
 });
 
@@ -62,11 +76,15 @@ router.delete('/products/:id', async (req: Request, res: Response) => {
 
     try {
         const product = await Product.findByIdAndDelete(id);
-        res.send(product);
-      } catch (error) {
+        if (!product) {
+            res.status(404).json({ message: 'Product not found' });
+        } else {
+            res.send(product);
+        }
+    } catch (error) {
         console.error(error);
-        res.status(500).send(error);
-      }
+        res.status(500).json({ message: 'An error occurred while trying to delete the product' });
+    }
 });
 
 export default router;
