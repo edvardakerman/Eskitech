@@ -33,15 +33,15 @@ router.get('/products/:id', async (req: Request, res: Response) => {
 
 // Create a new product
 router.post('/products', async (req: Request, res: Response) => {
-    const { name, description, price, quantity } = req.body;
+    const { name, description, price, inventory } = req.body;
 
-    if (!name || !description || price == null || quantity == null) {
+    if (!name || !description || price == null || inventory == null) {
         res.status(400).json({
-            message: 'All fields (name, description, price, and quantity) are required'
+            message: 'All fields (name, description, price, and inventory) are required'
         });
     } else {
         try {
-            const product = new Product({ name, description, price, quantity });
+            const product = new Product({ name, description, price, inventory });
             await product.save();
             res.send(product);
         } catch (error) {
@@ -55,10 +55,10 @@ router.post('/products', async (req: Request, res: Response) => {
 // Update a product by ID
 router.put('/products/:id', async (req: Request, res: Response) => {
     const id = req.params.id;
-    const { name, description, price, quantity } = req.body;
+    const { name, description, price, inventory } = req.body;
 
     try {
-        const product = await Product.findByIdAndUpdate(id, { name, description, price, quantity }, { new: true });
+        const product = await Product.findByIdAndUpdate(id, { name, description, price, inventory }, { new: true });
         if (!product) {
             res.status(404).json({ message: 'Product not found' });
         } else {

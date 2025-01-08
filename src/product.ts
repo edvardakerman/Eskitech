@@ -6,7 +6,7 @@ const productSchema = new Schema<ProductType>({
     name: String,
     description: String,
     price: Number,
-    quantity: Number
+    inventory: Number
 }, { versionKey: false });
 
 const Product = model<ProductType>('Product', productSchema);

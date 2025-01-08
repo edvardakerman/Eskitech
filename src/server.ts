@@ -11,7 +11,19 @@ const port: number = 3000;
 // Define a route for the root path ('/')
 app.get('/', (req: Request, res: Response) => {
     // Send a response to the client
-    res.send('Hello, TypeScript + Node.js + Express!');
+    res.json({
+        message: 'Welcome to Eskitech API',
+        endpoints: {
+            "/products": {
+                "description": "Get a list of products or create a new product",
+                "methods": ["GET", "POST"]
+            },
+            "/products/{id}": {
+                "description": "Get, update, or delete a specific product by ID",
+                "methods": ["GET", "PUT", "DELETE"]
+            }
+        }
+    });
 });
 
 app.use(express.json());
